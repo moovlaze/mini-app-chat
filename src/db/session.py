@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 
 from .base import Base
 from users.models import User
+from chats.models import PersonalChat
 
 engine  = create_async_engine("postgresql+asyncpg://postgres:postgres@localhost:5432/postgres", echo=True)
 
@@ -15,7 +16,10 @@ async def init_db():
 	async with async_session() as session:
 		test_user = User(name="Jhon", email="jhon@example.com", password="securepassword")
 		test_user_two = User(name="Jimmy", email="jimmy@example.com", password="supersecurepassword")
+		print("test_user.id",test_user.id)
+		personal_chat = PersonalChat(user_id=test_user.id, two_user_id=test_user_two.id)
 
+		session.add(personal_chat)
 		session.add(test_user)
 		session.add(test_user_two)
 		
