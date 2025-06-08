@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
         return f"{self.__class__}: | {self.__dict__}"
 
 
-class TimesTamped:
+class TimesTampedMixin:
     created_at: Mapped[datetime.datetime] = mapped_column(
         server_default=text("TIMEZONE('UTC', now())")
     )
