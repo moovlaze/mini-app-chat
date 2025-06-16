@@ -17,7 +17,7 @@ class Chat(Base):
     __tablename__ = "chat"
     
     id: Mapped[int] = mapped_column(Identity(always=True), primary_key=True)
-    title: Mapped[int | None]
+    title: Mapped[str | None]
     type: Mapped[str]
     
 class UserToChat(Base):
