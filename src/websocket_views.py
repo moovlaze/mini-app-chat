@@ -12,8 +12,6 @@ async def create_chat(user_id: int, chat_id: int):
     
     
 async def save_message(data: dict):
-    print(f"{data=}")
-    print(f"{data['sender_id']}")
     async with async_session() as session:
         message = Message(
 			sender_id=data["sender_id"],
