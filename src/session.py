@@ -23,12 +23,20 @@ async def init_db():
 			{"title": "chat two", "type": "public"},
 		]
   
+		user_to_chat = [
+			{"user_id": 1, "chat_id": 1},
+			{"user_id": 2, "chat_id": 1},
+			{"user_id": 2, "chat_id": 2},
+		]
+  
 		insert_users = insert(User).values(users)
 		insert_chats = insert(Chat).values(chats)
+		insert_user_to_chats = insert(Chat).values(user_to_chat)
 
 		print("START session execute")
 		await session.execute(insert_users)
 		await session.execute(insert_chats)
+		await session.execute(insert_user_to_chats)
 		print("END session execute")
   
 		await session.commit()

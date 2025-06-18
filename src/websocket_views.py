@@ -1,4 +1,5 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from sqlalchemy import select
 
 from session import async_session
 from models import User, Chat, UserToChat, Message
@@ -27,6 +28,14 @@ class ConnectionManager:
 		self.active_connections: dict = {}
 
 	async def connect(self, websocket: WebSocket, chat_id: int):
+     
+		async with async_session() as session:
+			query = select(UserToChat).where(UserToChat.chat_id == chat_id)
+
+			result = await session.execute(query)
+			print(result.scalars().all())
+     
+     
 		await websocket.accept()
 		if chat_id in self.active_connections:
 			self.active_connections[chat_id]["connections"].append(websocket)
@@ -60,3 +69,6 @@ async def websocket_endpoint(websocket: WebSocket, user_id: int, chat_id: int):
 	except WebSocketDisconnect:
 		manager.disconnect(websocket, chat_id)
   
+# При подключении к чату, будет запрос в БД на проверку нахоождения этого чата в БД. Если его там нет, то будет создаваться новый чат с этим ID
+# Либо можно сделать так, что будет отделльный эндпоинт на создание чата, а при подключении к сокету будет бдует просто проверка в БД
+# на то что этот чат существует  
