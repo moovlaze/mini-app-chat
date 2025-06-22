@@ -24,7 +24,7 @@ class UserToChat(Base):
     __tablename__ = "user_to_chat"
     
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
-    chat_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), primary_key=True)
+    chat_id: Mapped[int] = mapped_column(ForeignKey("chat.id", ondelete="CASCADE"), primary_key=True)
     
 class Message(Base):
     __tablename__ = "message"

@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy import insert
 
-from models import Base, User, Chat
+from models import Base, User, Chat, UserToChat
 
 async_engine = create_async_engine(url="postgresql+asyncpg://postgres:postgres@localhost:5432/postgres", echo=True)
 
@@ -28,16 +28,12 @@ async def init_db():
 			{"user_id": 2, "chat_id": 1},
 			{"user_id": 2, "chat_id": 2},
 		]
-  
+    
 		insert_users = insert(User).values(users)
 		insert_chats = insert(Chat).values(chats)
-		insert_user_to_chats = insert(Chat).values(user_to_chat)
-
-		print("START session execute")
+		insert_user_to_chats = insert(UserToChat).values(user_to_chat)
+		
 		await session.execute(insert_users)
 		await session.execute(insert_chats)
 		await session.execute(insert_user_to_chats)
-		print("END session execute")
-  
 		await session.commit()
-	

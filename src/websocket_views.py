@@ -27,14 +27,19 @@ class ConnectionManager:
 	def __init__(self):
 		self.active_connections: dict = {}
 
-	async def connect(self, websocket: WebSocket, chat_id: int):
+	async def connect(self, websocket: WebSocket, chat_id: int, user_id: int):
      
 		async with async_session() as session:
-			query = select(UserToChat).where(UserToChat.chat_id == chat_id)
+			query = select(UserToChat).where(
+       						UserToChat.chat_id == chat_id, 
+                        	UserToChat.user_id == user_id
+                        )
 
 			result = await session.execute(query)
-			print(result.scalars().all())
-     
+			cursor = result.scalars().all()
+   
+			for i in cursor:
+				print(i.chat_id)
      
 		await websocket.accept()
 		if chat_id in self.active_connections:
@@ -59,7 +64,7 @@ manager = ConnectionManager()
 
 @router.websocket("/ws/{user_id}/{chat_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: int, chat_id: int):
-	await manager.connect(websocket, chat_id)
+	await manager.connect(websocket, chat_id, user_id)
 	try:
 		while True:
 			data = await websocket.receive_json()
